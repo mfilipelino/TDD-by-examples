@@ -96,3 +96,4 @@ ENV/
 .ropeproject
 .idea/
 tddcookbook/__pycache__/
+db.sqlite3
