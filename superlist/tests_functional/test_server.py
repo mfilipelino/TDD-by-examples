@@ -1,9 +1,17 @@
+from unittest import TestCase
+
 from selenium import webdriver
 
-browser = webdriver.Firefox()
-browser.get('http://localhost:8000')
 
-print(browser.name)
-print(browser.current_url)
+class ServerSideTest(TestCase):
 
-assert 'Django' in browser.title
+    def setUp(self):
+        self.browser = webdriver.Chrome()
+
+    # servidor esta de rodando
+    def test_run_server(self):
+        self.browser.get('http://localhost:8000')
+        self.assertIn('Django', self.browser.title, 'Servidor não está rodando')
+
+    def tearDown(self):
+        self.browser.quit()
