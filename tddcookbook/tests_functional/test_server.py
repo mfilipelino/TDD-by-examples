@@ -6,4 +6,4 @@ browser.get('http://localhost:8000')
 print(browser.name)
 print(browser.current_url)
 
-assert 'Rapadura' in browser.title
+assert 'Django' in browser.title
