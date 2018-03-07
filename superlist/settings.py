@@ -49,7 +49,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'tddcookbook.urls'
+ROOT_URLCONF = 'superlist.urls'
 
 TEMPLATES = [
     {
@@ -67,7 +67,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'tddcookbook.wsgi.application'
+WSGI_APPLICATION = 'superlist.wsgi.application'
 
 
 # Database
