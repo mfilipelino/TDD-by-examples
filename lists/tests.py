@@ -15,8 +15,7 @@ class ListTestCase(TestCase):
         self.assertTemplateUsed(response, 'home.html')
 
     def test_can_save_a_POST_request(self):
-        response = self.client.post('/', data={'item_text': 'A new list item'})
-
+        self.client.post('/', data={'item_text': 'A new list item'})
         self.assertEqual(Item.objects.count(), 1)
         new_item = Item.objects.first()
         self.assertEqual(new_item.text, 'A new list item')
@@ -29,6 +28,18 @@ class ListTestCase(TestCase):
     def test_only_saves_items_when_necessary(self):
         self.client.get('/')
         self.assertEqual(Item.objects.count(), 0)
+
+    def test_display_all_list_items(self):
+        #prepare
+        Item.objects.create(text='item 1')
+        Item.objects.create(text='item 2')
+
+        #execute
+        response = self.client.get('/')
+
+        #assert
+        self.assertIn('item 1', response.content.decode())
+        self.assertIn('item 2', response.content.decode())
 
 
 class ItemModelTest(TestCase):
