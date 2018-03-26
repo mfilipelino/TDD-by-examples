@@ -26,6 +26,11 @@ class HomePageTestCase(LiveServerTestCase):
                     raise e
                 time.sleep(0.5)
 
+    def insert_item_in_list(self, text_item, inputbox_id):
+        inputbox = self.browser.find_element_by_id(inputbox_id)
+        inputbox.send_keys(text_item)
+        inputbox.send_keys(Keys.ENTER)
+
     def test_can_start_a_list_and_retrieve_it_later(self):
         self.browser.get(self.live_server_url)
         self.assertIn('To-Do', self.browser.title)
@@ -48,7 +53,40 @@ class HomePageTestCase(LiveServerTestCase):
 
         self.wait_for_row_in_list_table('Use peacock feathers to make a fly')
         self.wait_for_row_in_list_table('Buy peacock feathers')
-        self.fail('Finish the test')
+
+    def test_multiple_user_can_start_lists_at_different_urls(self):
+
+        # edith acessa o site e adiciona um elemento na lista
+        self.browser.get(self.live_server_url)
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Buy peacock feathers')
+        inputbox.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table('Buy peacock feathers')
+        edith_list_url = self.browser.current_url
+        self.assertRegex(edith_list_url, '/lists/.+')
+
+        # reiniciar o browser para não pegar cookies
+        self.browser.quit()
+        self.browser = webdriver.Chrome()
+
+        # Francis acessa a pagina inicial não tem sinal nenhuma da list de edith
+        self.browser.get(self.live_server_url)
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('Buy peacock feathers', page_text)
+        self.assertNotIn('make a fly', page_text)
+
+        # Francis inicia uma nova lista inserindo um item novo
+        self.insert_item_in_list(text_item='Buy milk', inputbox_id='id_new_item')
+        self.wait_for_row_in_list_table('Buy milk')
+
+        francis_list_url = self.browser.current_url
+        self.assertRegex(francis_list_url, '/lists/.+')
+
+        self.assertNotEqual(francis_list_url, edith_list_url)
+
+        page_text = self.browser.find_elements_by_tag_name('body').text
+        self.assertNotIn('Buy peacock feathers', page_text)
+        self.assertIn('Buy milk', page_text)
 
     def tearDown(self):
         self.browser.quit()
