@@ -23,7 +23,7 @@ class ListTestCase(TestCase):
     def test_redirects_after_POST(self):
         response = self.client.post('/', data={'item_text': 'A new list item'})
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.get('location'), '/')
+        self.assertEqual(response.get('location'), '/lists/the-only-list-in-the-world/')
 
     def test_only_saves_items_when_necessary(self):
         self.client.get('/')
@@ -55,3 +55,15 @@ class ItemModelTest(TestCase):
         Item(text='item1').save()
         Item(text='item2').save()
         self.assertEqual(Item.objects.count(), 2)
+
+
+class ListViewTest(TestCase):
+
+    def test_display_all_items(self):
+        Item.objects.create(text='itemey 1')
+        Item.objects.create(text='itemey 2')
+
+        response = self.client.get('/lists/the-only-list-in-the-world/')
+
+        self.assertContains(response, 'itemey 1')
+        self.assertContains(response, 'itemey 2')
