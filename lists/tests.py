@@ -98,7 +98,7 @@ class NewItemTest(TestCase):
         correct_list = List.objects.create()
 
         request = self.client.post(
-            'lists/{}/add_items'.format(correct_list.id),
+            '/lists/{}/add_item'.format(correct_list.id),
             data=dict(item_text='A new item for an existing list')
         )
 
