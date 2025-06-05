@@ -1,6 +1,20 @@
 #!/usr/bin/env python
 import os
 import sys
+import collections
+import collections.abc
+
+# Monkeypatch for Django 1.8 compatibility with Python 3.10+
+if not hasattr(collections, 'Mapping'):
+    collections.Mapping = collections.abc.Mapping
+if not hasattr(collections, 'MutableMapping'):
+    collections.MutableMapping = collections.abc.MutableMapping
+if not hasattr(collections, 'Sequence'):
+    collections.Sequence = collections.abc.Sequence
+if not hasattr(collections, 'MutableSequence'):
+    collections.MutableSequence = collections.abc.MutableSequence
+if not hasattr(collections, 'Set'):
+    collections.Set = collections.abc.Set
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "superlist.settings")
